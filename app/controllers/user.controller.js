@@ -15,7 +15,7 @@ const userController = {
             'status' : req.body.status
         })
         
-        return res.json({ status : 200,userdata : user, message : 'User created succefully'})
+        return res.json({ status : 200,userdata : user, message : 'User created successfully'})
     },    
     findAll : async (req,res) => {    
         const users = await User.find();        
