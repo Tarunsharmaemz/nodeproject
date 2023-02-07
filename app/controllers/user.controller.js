@@ -15,29 +15,25 @@ const userController = {
             'status' : req.body.status
         })
         
-        return res.json({ status : 200,userdata : user, message : 'User has created successfully'})
+        return res.json({ status : 200, data : user, message : 'User created successfully'})
     },    
     findAll : async (req,res) => {    
-        const users = await User.find();        
+        const users = await User.find({},{name : 1,email : 1});        
         return res.json({status : 200,data : users});    
     },    
     findOne : async (req,res) => {
-        const user = User.findById(req.params.userId)
+        const user = await User.findById(req.params.userId)
         return res.json({status : 200,data : user});
     },    
     update : async (req,res) => {
-        User.findByIdAndUpdate(req.params.userId, {
+        await User.findByIdAndUpdate(req.params.userId, {
            'name' : req.body.name 
         }, {new: true} )
-        .then(user => {
-            res.send(user);
-        });
+        return res.json({ status : 200, message: "User updated successfully"});
     },    
     deleteUser : async (req,res) => {
-        User.findByIdAndRemove(req.params.userId)
-        .then(data => {
-            res.send({ status : 200, message : 'User deleted successfully' });
-        })
+        await User.findByIdAndRemove(req.params.userId)        
+        res.send({ status : 200, message : 'User deleted successfully' });        
     },    
     sendEmail : async (email, subject, text) => {
         try {
@@ -73,7 +69,7 @@ const userController = {
             filename: function (req, file, cb) {
               cb(null, file.originalname)
             }
-        })
+        });
         const upload = multer({ storage: storage })
 
         const user = await User.create({
