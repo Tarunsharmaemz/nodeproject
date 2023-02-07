@@ -7,7 +7,8 @@ const bodyParser = require('body-parser');
 const dbConfig = require('./config/database.config');
 const mongoose = require('mongoose');
 // Import routes
-const routes = require('./app/routes/user.routes.js');
+const routes = require('./app/routes/user.routes');
+const commroutes = require('./app/routes/community.routes');
 const adminroute = require('./app/routes/administrator.routes');
 const cors = require('cors');
 // create express app
@@ -23,8 +24,7 @@ const nocache = (_, resp, next) => {
     next();
 }
 
-const generateRTCToken = (req, resp) => {
-    console.log('ddd' ,req.body);
+const generateRTCToken = (req, resp) => {    
     resp.header('Access-Control-Allow-Origin', '*');
     const channelName = req.body.channelName;
     console.log('channelName' ,channelName);
@@ -74,11 +74,13 @@ mongoose.connect(dbConfig.url,{
 
 // define a simple route
 app.get('/', (req, res) => {
-    res.json({"message": "Welcome to new Project.This is my first project."});
+    res.json({"message" : "Welcome to new Project.This is my first project."});
 });
-app.post('/access_token', nocache , generateRTCToken)
+
+app.post('/access_token',nocache,generateRTCToken)
 
 app.use("/api",routes)
+app.use("/api/community",commroutes)
 app.use("/api/admin",adminroute)
 
 // listen for requests
